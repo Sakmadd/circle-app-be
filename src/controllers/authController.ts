@@ -1,21 +1,145 @@
-import { RequestHandler } from 'express';
+import { Request, Response } from 'express';
+import ResponseDTO from '../dtos/ResponseDTO';
+import ServiceResponseDTO from '../dtos/serviceResponseDto';
+import AuthServices from '../services/authServices';
+import { UserType } from '../types/types';
 
 class AuthControllers {
-  login: RequestHandler = async (req, res) => {
-    res.send('login');
-  };
+  async register(req: Request, res: Response) {
+    const avatar =
+      'https://api.dicebear.com/8.x/thumbs/svg?seed=Lucy&backgroundColor=f1f4dc&translateX=-5&shapeColor=f1f4dc';
+    const banner =
+      'https://api.dicebear.com/9.x/thumbs/svg?seed=Bandit&backgroundColor=f1f4dc&eyesColor=transparent&mouthColor=transparent';
+    const { username, email, name, password, bio } = req.body;
 
-  register: RequestHandler = async (req, res) => {
-    res.send('register');
-  };
+    const { error, payload, errorMessage }: ServiceResponseDTO<UserType> =
+      await AuthServices.register({
+        username,
+        email,
+        name,
+        password,
+        avatar,
+        banner,
+        bio: bio ? bio : null,
+      });
 
-  forgotPassword: RequestHandler = async (req, res) => {
-    res.send('forgotPassword');
-  };
+    if (error) {
+      return res.status(500).json(
+        new ResponseDTO<null>({
+          error,
+          message: errorMessage,
+          data: payload,
+        })
+      );
+    }
 
-  resetPassword: RequestHandler = async (req, res) => {
-    res.send('resetPassword');
-  };
+    delete payload.password;
+
+    return res.status(200).json(
+      new ResponseDTO<UserType>({
+        error,
+        message: {
+          status: 'User created!',
+        },
+        data: payload,
+      })
+    );
+  }
+
+  async login(req: Request, res: Response) {
+    const { username, password } = req.body;
+
+    const { error, payload, errorMessage }: ServiceResponseDTO<string> =
+      await AuthServices.login({
+        username,
+        password,
+      });
+
+    if (error) {
+      return res.status(500).json(
+        new ResponseDTO<null>({
+          error,
+          message: errorMessage,
+          data: null,
+        })
+      );
+    }
+
+    return res.status(200).json(
+      new ResponseDTO<string>({
+        error,
+        message: {
+          status: 'User logged in!',
+        },
+        data: {
+          token: payload,
+        },
+      })
+    );
+  }
+
+  async forgotPassword(req: Request, res: Response) {
+    const { email } = req.body;
+
+    const { error, payload, errorMessage }: ServiceResponseDTO<string> =
+      await AuthServices.forgotPassword({
+        email,
+      });
+
+    if (error) {
+      return res.status(500).json(
+        new ResponseDTO<null>({
+          error,
+          message: errorMessage,
+          data: null,
+        })
+      );
+    }
+
+    return res.status(200).json(
+      new ResponseDTO<UserType>({
+        error,
+        message: {
+          status: 'Ready to reset password!',
+        },
+        data: {
+          token: payload,
+        },
+      })
+    );
+  }
+  async resetPassword(req: Request, res: Response) {
+    const requester = res.locals.user;
+    const { password } = req.body;
+
+    const { error, payload, errorMessage }: ServiceResponseDTO<string> =
+      await AuthServices.resetPassword({
+        email: requester.email,
+        password,
+      });
+
+    if (error) {
+      return res.status(500).json(
+        new ResponseDTO<null>({
+          error,
+          message: errorMessage,
+          data: null,
+        })
+      );
+    }
+
+    return res.status(200).json(
+      new ResponseDTO<string>({
+        error,
+        message: {
+          status: 'Password changed!',
+        },
+        data: {
+          token: payload,
+        },
+      })
+    );
+  }
 }
 
 export default new AuthControllers();
