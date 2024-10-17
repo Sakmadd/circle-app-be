@@ -1,9 +1,13 @@
 import express from 'express';
+import { router } from './routes/routes';
+
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.use('/', router);
+
+app.use((req, res) => {
+  res.status(404).send('not-found');
 });
 
 app.listen(port, () => {
