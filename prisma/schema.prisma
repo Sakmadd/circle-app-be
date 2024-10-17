@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,3 +6,92 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  email String @unique
+  name String
+  password String
+  avatar String?
+  banner String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  filterContent Boolean @default(false)
+  
+  feeds Feed[] @relation("userFeeds")
+  replies Reply[] @relation("userReplies")
+  likes Like[] @relation("userLikes")
+  followings Follow[] @relation("userFollowed")
+  followers Follow[] @relation("userFollowing")
+
+  @@map("users")
+
+}
+
+model Feed {
+  id Int @id @default(autoincrement())
+  content String
+  image String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  likes Like[] @relation("feedLikes")
+  replies Reply[] @relation("feedReplies")
+  author User @relation(name: "userFeeds", fields: [userId], references: [id])
+  userId Int
+
+
+  @@map("feeds")
+
+}
+
+model Reply {
+  id Int @id @default(autoincrement())
+
+  image String?
+  content String
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  repliedBy User @relation(fields: [userId], references: [id], name: "userReplies", onDelete: Cascade)
+  repliedIn Feed @relation(fields: [feedId], references: [id], name: "feedReplies", onDelete: Cascade)
+  userId Int
+  feedId Int
+
+  @@map("replies")
+}
+
+model Like {
+  id Int @id @default(autoincrement())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  likedBy User @relation(fields: [userId], references: [id], name: "userLikes")
+  likedin Feed @relation(fields: [feedId], references: [id], name: "feedLikes")
+  userId Int
+  feedId Int
+
+  @@map("likes")
+}
+
+model Follow {
+  id Int @id @default(autoincrement())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userFollowed User @relation(fields: [userThatFollowed], references: [id], name: "userFollowed", onDelete: Cascade)
+  userFollowing User @relation(fields: [userThatFollowing], references: [id], name: "userFollowing", onDelete: Cascade)
+  userThatFollowed Int
+  userThatFollowing Int
+  @@map("follows")
+}
+
+
+
+
+
+
+
