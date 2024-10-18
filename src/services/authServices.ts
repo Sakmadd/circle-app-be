@@ -25,8 +25,8 @@ class AuthServices {
     registerDTO: RegisterDTO
   ): Promise<ServiceResponseDTO<UserType>> {
     try {
-      const { error } = registerSchema.safeParse(RegisterDTO);
-      if (error) {
+      const { success, error } = registerSchema.safeParse(registerDTO);
+      if (!success) {
         throw new CircleError({ error: error.message });
       }
       const user = await prisma.user.create({
@@ -59,8 +59,8 @@ class AuthServices {
     }
   }
   async login(LoginDto: LoginDto): Promise<ServiceResponseDTO<string>> {
-    const { error } = loginSchema.safeParse(LoginDto);
-    if (error) throw new CircleError({ error: error.message });
+    const { success, error } = loginSchema.safeParse(LoginDto);
+    if (!success) throw new CircleError({ error: error.message });
 
     const requestedUser = await prisma.user.findUnique({
       where: {
@@ -99,9 +99,10 @@ class AuthServices {
     forgotPasswordDTO: ForgotPasswordDTO
   ): Promise<ServiceResponseDTO<string>> {
     try {
-      const { error } = forgotPasswordSchema.safeParse(forgotPasswordDTO);
+      const { success, error } =
+        forgotPasswordSchema.safeParse(forgotPasswordDTO);
 
-      if (error) {
+      if (!success) {
         throw new CircleError({ error: error.message });
       }
 

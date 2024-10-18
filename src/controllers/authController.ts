@@ -22,7 +22,6 @@ class AuthControllers {
         banner,
         bio: bio ? bio : null,
       });
-
     if (error) {
       return res.status(500).json(
         new ResponseDTO<null>({

@@ -1,9 +1,11 @@
 import bcrypt from 'bcrypt';
 import { SALT_ROUND } from '../configs/config';
+const salt = Number(SALT_ROUND);
 
 class Hasher {
   hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, Number(SALT_ROUND));
+    console.log(typeof salt);
+    return bcrypt.hash(password, salt);
   }
 
   comparePassword(password: string, hash: string) {
