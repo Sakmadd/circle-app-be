@@ -12,3 +12,11 @@ export interface UserType {
   isFollowed?: boolean;
   filterContent: boolean;
 }
+
+export interface FollowType {
+  id: number;
+  userFollowedId: number;
+  userFollowingId: number;
+  createdAt: Date;
+  updatedAt: Date;
+}

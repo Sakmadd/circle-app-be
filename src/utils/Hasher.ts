@@ -4,7 +4,6 @@ const salt = Number(SALT_ROUND);
 
 class Hasher {
   hashPassword(password: string): Promise<string> {
-    console.log(typeof salt);
     return bcrypt.hash(password, salt);
   }
 

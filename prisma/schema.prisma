@@ -84,10 +84,10 @@ model Follow {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userFollowed User @relation(fields: [userThatFollowed], references: [id], name: "userFollowed", onDelete: Cascade)
-  userFollowing User @relation(fields: [userThatFollowing], references: [id], name: "userFollowing", onDelete: Cascade)
-  userThatFollowed Int
-  userThatFollowing Int
+  userFollowed User @relation(fields: [userFollowedId], references: [id], name: "userFollowed", onDelete: Cascade)
+  userFollowing User @relation(fields: [userFollowingId], references: [id], name: "userFollowing", onDelete: Cascade)
+  userFollowedId Int
+  userFollowingId Int
   @@map("follows")
 }
 

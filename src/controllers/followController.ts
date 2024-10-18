@@ -1,11 +1,70 @@
-import { RequestHandler } from 'express';
+import { Request, Response } from 'express';
+import ResponseDTO from '../dtos/ResponseDTO';
+import ServiceResponseDTO from '../dtos/serviceResponseDto';
+import followServices from '../services/followServices';
+import { FollowType } from '../types/types';
 
 class FollowControllers {
-  follow: RequestHandler = async (req, res) => {
-    res.send('follow');
-  };
-  unFollow: RequestHandler = async (req, res) => {
-    res.send('unFollow');
-  };
+  async follow(req: Request, res: Response) {
+    const loggedUser = res.locals.user;
+    const { id } = req.params;
+
+    const { error, payload, errorMessage }: ServiceResponseDTO<FollowType> =
+      await followServices.follow({
+        userFollowedId: +id,
+        userFollowingId: loggedUser.id,
+      });
+
+    if (error) {
+      return res.status(400).json(
+        new ResponseDTO<null>({
+          data: null,
+          error: true,
+          message: errorMessage,
+        })
+      );
+    }
+
+    return res.status(200).json(
+      new ResponseDTO<FollowType>({
+        error: false,
+        message: {
+          status: 'User followed!',
+        },
+        data: payload,
+      })
+    );
+  }
+
+  async unFollow(req: Request, res: Response) {
+    const loggedUser = res.locals.user;
+    const { id } = req.params;
+
+    const { error, payload, errorMessage }: ServiceResponseDTO<FollowType> =
+      await followServices.unFollow({
+        userFollowedId: +id,
+        userFollowingId: loggedUser.id,
+      });
+
+    if (error) {
+      return res.status(400).json(
+        new ResponseDTO<null>({
+          data: null,
+          error: true,
+          message: errorMessage,
+        })
+      );
+    }
+
+    return res.status(200).json(
+      new ResponseDTO<FollowType>({
+        error: false,
+        message: {
+          status: 'User unFollowed!',
+        },
+        data: payload,
+      })
+    );
+  }
 }
 export default new FollowControllers();

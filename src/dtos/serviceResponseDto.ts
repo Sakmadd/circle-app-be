@@ -5,9 +5,10 @@ class ServiceResponseDTO<T> {
   payload: T | null;
   errorMessage: string | null;
 
-  constructor({ error, payload }: ServiceResponseDTOParams<T>) {
+  constructor({ error, payload, errorMessage }: ServiceResponseDTOParams<T>) {
     this.error = error;
     this.payload = payload;
+    this.errorMessage = errorMessage;
   }
 }
 
