@@ -41,20 +41,20 @@ class AuthServices {
       return new ServiceResponseDTO<UserType>({
         error: false,
         payload: user,
-        errorMessage: null,
+        message: null,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         return new ServiceResponseDTO({
           error: true,
           payload: null,
-          errorMessage: prismaErrorHandler(error),
+          message: prismaErrorHandler(error),
         });
       }
       return new ServiceResponseDTO({
         error: true,
         payload: null,
-        errorMessage: error.message,
+        message: error.message,
       });
     }
   }
@@ -92,7 +92,7 @@ class AuthServices {
     return new ServiceResponseDTO<string>({
       error: false,
       payload: token,
-      errorMessage: null,
+      message: null,
     });
   }
   async forgotPassword(
@@ -136,20 +136,20 @@ class AuthServices {
       return new ServiceResponseDTO<string>({
         error: false,
         payload: token,
-        errorMessage: null,
+        message: null,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         return new ServiceResponseDTO({
           error: true,
           payload: null,
-          errorMessage: prismaErrorHandler(error),
+          message: prismaErrorHandler(error),
         });
       }
       return new ServiceResponseDTO({
         error: true,
         payload: null,
-        errorMessage: error,
+        message: error,
       });
     }
   }
@@ -181,20 +181,20 @@ class AuthServices {
       return new ServiceResponseDTO<string>({
         error: false,
         payload: token,
-        errorMessage: null,
+        message: null,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         return new ServiceResponseDTO({
           error: true,
           payload: null,
-          errorMessage: prismaErrorHandler(error),
+          message: prismaErrorHandler(error),
         });
       }
       return new ServiceResponseDTO({
         error: true,
         payload: null,
-        errorMessage: error,
+        message: error,
       });
     }
   }

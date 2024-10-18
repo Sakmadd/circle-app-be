@@ -12,7 +12,7 @@ class AuthControllers {
       'https://api.dicebear.com/9.x/thumbs/svg?seed=Bandit&backgroundColor=f1f4dc&eyesColor=transparent&mouthColor=transparent';
     const { username, email, name, password, bio } = req.body;
 
-    const { error, payload, errorMessage }: ServiceResponseDTO<UserType> =
+    const { error, payload, message }: ServiceResponseDTO<UserType> =
       await AuthServices.register({
         username,
         email,
@@ -26,7 +26,7 @@ class AuthControllers {
       return res.status(500).json(
         new ResponseDTO<null>({
           error,
-          message: errorMessage,
+          message: message,
           data: payload,
         })
       );
@@ -48,7 +48,7 @@ class AuthControllers {
   async login(req: Request, res: Response) {
     const { username, password } = req.body;
 
-    const { error, payload, errorMessage }: ServiceResponseDTO<string> =
+    const { error, payload, message }: ServiceResponseDTO<string> =
       await AuthServices.login({
         username,
         password,
@@ -58,7 +58,7 @@ class AuthControllers {
       return res.status(500).json(
         new ResponseDTO<null>({
           error,
-          message: errorMessage,
+          message: message,
           data: null,
         })
       );
@@ -80,7 +80,7 @@ class AuthControllers {
   async forgotPassword(req: Request, res: Response) {
     const { email } = req.body;
 
-    const { error, payload, errorMessage }: ServiceResponseDTO<string> =
+    const { error, payload, message }: ServiceResponseDTO<string> =
       await AuthServices.forgotPassword({
         email,
       });
@@ -89,7 +89,7 @@ class AuthControllers {
       return res.status(500).json(
         new ResponseDTO<null>({
           error,
-          message: errorMessage,
+          message: message,
           data: null,
         })
       );
@@ -111,7 +111,7 @@ class AuthControllers {
     const requester = res.locals.user;
     const { password } = req.body;
 
-    const { error, payload, errorMessage }: ServiceResponseDTO<string> =
+    const { error, payload, message }: ServiceResponseDTO<string> =
       await AuthServices.resetPassword({
         email: requester.email,
         password,
@@ -121,7 +121,7 @@ class AuthControllers {
       return res.status(500).json(
         new ResponseDTO<null>({
           error,
-          message: errorMessage,
+          message: message,
           data: null,
         })
       );

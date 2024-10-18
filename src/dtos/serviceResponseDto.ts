@@ -3,12 +3,12 @@ import { ServiceResponseDTOParams } from '../types/dtosParams';
 class ServiceResponseDTO<T> {
   error: boolean;
   payload: T | null;
-  errorMessage: string | null;
+  message: string | null;
 
-  constructor({ error, payload, errorMessage }: ServiceResponseDTOParams<T>) {
+  constructor({ error, payload, message }: ServiceResponseDTOParams<T>) {
     this.error = error;
     this.payload = payload;
-    this.errorMessage = errorMessage;
+    this.message = message;
   }
 }
 

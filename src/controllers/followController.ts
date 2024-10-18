@@ -9,7 +9,7 @@ class FollowControllers {
     const loggedUser = res.locals.user;
     const { id } = req.params;
 
-    const { error, payload, errorMessage }: ServiceResponseDTO<FollowType> =
+    const { error, payload, message }: ServiceResponseDTO<FollowType> =
       await followServices.follow({
         userFollowedId: +id,
         userFollowingId: loggedUser.id,
@@ -20,7 +20,7 @@ class FollowControllers {
         new ResponseDTO<null>({
           data: null,
           error: true,
-          message: errorMessage,
+          message: message,
         })
       );
     }
@@ -40,7 +40,7 @@ class FollowControllers {
     const loggedUser = res.locals.user;
     const { id } = req.params;
 
-    const { error, payload, errorMessage }: ServiceResponseDTO<FollowType> =
+    const { error, payload, message }: ServiceResponseDTO<FollowType> =
       await followServices.unFollow({
         userFollowedId: +id,
         userFollowingId: loggedUser.id,
@@ -51,7 +51,7 @@ class FollowControllers {
         new ResponseDTO<null>({
           data: null,
           error: true,
-          message: errorMessage,
+          message: message,
         })
       );
     }

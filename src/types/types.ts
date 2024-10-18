@@ -20,3 +20,11 @@ export interface FollowType {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface LikeType {
+  id: number;
+  userId: number;
+  feedId: number;
+  createdAt: Date;
+  updatedAt: Date;
+}

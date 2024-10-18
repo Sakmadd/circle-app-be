@@ -27,7 +27,7 @@ class FollowServices {
       return new ServiceResponseDTO<FollowType>({
         error: false,
         payload: createdFollow,
-        errorMessage: null,
+        message: null,
       });
     } catch (error) {
       let errorMessage = 'An unknown error occurred';
@@ -41,7 +41,7 @@ class FollowServices {
       return new ServiceResponseDTO<FollowType>({
         error: true,
         payload: null,
-        errorMessage: errorMessage,
+        message: errorMessage,
       });
     }
   }
@@ -81,7 +81,7 @@ class FollowServices {
 
       return new ServiceResponseDTO<FollowType>({
         error: false,
-        errorMessage: null,
+        message: null,
         payload: createdUnfollow,
       });
     } catch (error) {
@@ -96,7 +96,7 @@ class FollowServices {
       return new ServiceResponseDTO<FollowType>({
         error: true,
         payload: null,
-        errorMessage: errorMessage,
+        message: errorMessage,
       });
     }
   }
