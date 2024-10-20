@@ -21,10 +21,9 @@ class LkeServices {
       });
     }
 
-    const addedLike: LikeType = await this.addLike(likeState);
+    const addedLike: LikeType = await this.addLike(likeDto);
     delete addedLike.createdAt;
     delete addedLike.updatedAt;
-
     return new ServiceResponseDTO<LikeType>({
       error: false,
       message: 'succeded to like',
@@ -46,9 +45,10 @@ class LkeServices {
     });
   }
   private async addLike(likeDto: LikeDto): Promise<LikeType> {
-    return await prisma.like.create({
+    const liked = await prisma.like.create({
       data: likeDto,
     });
+    return liked;
   }
 }
 

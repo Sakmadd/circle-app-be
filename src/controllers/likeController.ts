@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
 import ResponseDTO from '../dtos/ResponseDTO';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
-import likeServices from '../services/likeServices';
 import { LikeType } from '../types/types';
+import likeServices from '../services/likeServices';
 
 class likeController {
   async likeLogic(req: Request, res: Response) {
     const loggedUser = res.locals.user;
-    const { feedId } = req.body;
+    const { id } = req.params;
 
     const { error, message, payload }: ServiceResponseDTO<LikeType> =
       await likeServices.LikeLogic({
-        feedId,
+        feedId: +id,
         userId: loggedUser.id,
       });
 
@@ -25,11 +25,13 @@ class likeController {
       );
     }
 
-    return new ServiceResponseDTO<LikeType>({
-      error: false,
-      message: message,
-      payload: payload,
-    });
+    return res.status(200).json(
+      new ServiceResponseDTO<LikeType>({
+        error: false,
+        message: message,
+        payload: payload,
+      })
+    );
   }
 }
 
