@@ -13,10 +13,16 @@ export interface UserType {
   filterContent: boolean;
 }
 
+export interface userMoreDetailType extends UserType {
+  followers?: FollowType[];
+  followings?: FollowType[];
+  feeds?: FeedMoreDetailType[];
+}
+
 export interface FollowType {
   id: number;
-  userFollowedId: number;
-  userFollowingId: number;
+  followerId: number;
+  followingId: number;
   createdAt: Date;
   updatedAt: Date;
 }
