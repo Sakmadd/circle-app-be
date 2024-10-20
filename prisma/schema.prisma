@@ -32,17 +32,17 @@ model User {
 }
 
 model Feed {
-  id Int @id @default(autoincrement())
-  content String
-  image String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+id            Int       @id @default(autoincrement())
+  content       String
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  likes Like[] @relation("feedLikes")
-  replies Reply[] @relation("feedReplies")
-  author User @relation(name: "userFeeds", fields: [userId], references: [id])
-  userId Int
+  author        User      @relation(fields: [authorId], references: [id], name: "userFeeds",  onDelete: Cascade)
+  authorId      Int
 
+  replies       Reply[]   @relation("feedReplies")
+  likes         Like[]    @relation("feedLikes")
 
   @@map("feeds")
 

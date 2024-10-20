@@ -28,3 +28,29 @@ export interface LikeType {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ReplyType {
+  id: number;
+  image: string;
+  content: string;
+  createdAt: Date;
+  updateAt: Date;
+}
+
+export interface FeedType {
+  id: number;
+  content: string;
+  image: string;
+  createdAt: Date;
+  updatedAt: Date;
+  authorId: number;
+}
+
+export interface FeedMoreDetailType extends FeedType {
+  likes?: LikeType[];
+  replies?: ReplyType[];
+  author?: UserType;
+  isLiked?: boolean;
+  totalLikes?: number;
+  totalReplies?: number;
+}

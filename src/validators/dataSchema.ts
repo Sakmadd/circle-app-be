@@ -29,7 +29,7 @@ export const resetPasswordSchema = z.object({
 export const feedSchema = z.object({
   content: z.string().min(1),
   image: z.string().url().nullable(),
-  userId: z.number(),
+  authorId: z.number(),
 });
 
 export const replySchema = z.object({
