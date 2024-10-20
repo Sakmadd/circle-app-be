@@ -11,8 +11,8 @@ class FollowControllers {
 
     const { error, payload, message }: ServiceResponseDTO<FollowType> =
       await followServices.follow({
-        userFollowedId: +id,
-        userFollowingId: loggedUser.id,
+        followerId: +id,
+        followingId: loggedUser.id,
       });
 
     if (error) {
@@ -42,8 +42,8 @@ class FollowControllers {
 
     const { error, payload, message }: ServiceResponseDTO<FollowType> =
       await followServices.unFollow({
-        userFollowedId: +id,
-        userFollowingId: loggedUser.id,
+        followerId: +id,
+        followingId: loggedUser.id,
       });
 
     if (error) {

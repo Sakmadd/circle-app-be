@@ -1,9 +1,9 @@
 class FollowDto {
-  userFollowedId: number;
-  userFollowingId: number;
-  constructor({ userFollowedId, userFollowingId }) {
-    this.userFollowedId = userFollowedId;
-    this.userFollowingId = userFollowingId;
+  followerId: number;
+  followingId: number;
+  constructor({ followerId, followingId }) {
+    this.followerId = followerId;
+    this.followingId = followingId;
   }
 }
 

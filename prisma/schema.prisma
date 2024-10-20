@@ -24,8 +24,8 @@ model User {
   feeds Feed[] @relation("userFeeds")
   replies Reply[] @relation("userReplies")
   likes Like[] @relation("userLikes")
-  followings Follow[] @relation("userFollowed")
-  followers Follow[] @relation("userFollowing")
+  followers Follow[] @relation("userFollower")
+  followings Follow[] @relation("userFollowing")
 
   @@map("users")
 
@@ -79,17 +79,18 @@ model Like {
 }
 
 model Follow {
-  id Int @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  follower        User     @relation(fields: [followerId], references: [id], onDelete: Cascade, name: "userFollower") 
+  followerId      Int
+  following       User     @relation(fields: [followingId], references: [id], onDelete: Cascade, name: "userFollowing")
+  followingId     Int
 
-  userFollowed User @relation(fields: [userFollowedId], references: [id], name: "userFollowed", onDelete: Cascade)
-  userFollowing User @relation(fields: [userFollowingId], references: [id], name: "userFollowing", onDelete: Cascade)
-  userFollowedId Int
-  userFollowingId Int
   @@map("follows")
 }
+
 
 
 

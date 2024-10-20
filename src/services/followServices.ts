@@ -17,7 +17,7 @@ class FollowServices {
         throw new Error('Target user is already followed');
       }
 
-      const createdFollow = await prisma.follow.create({
+      const createdFollow: FollowType = await prisma.follow.create({
         data: followDto,
       });
 
@@ -61,8 +61,8 @@ class FollowServices {
 
       const existingFollow = await prisma.follow.findFirst({
         where: {
-          userFollowedId: followDto.userFollowedId,
-          userFollowingId: followDto.userFollowingId,
+          followerId: followDto.followerId,
+          followingId: followDto.followingId,
         },
       });
 
@@ -102,14 +102,15 @@ class FollowServices {
   }
 
   private isFolowHimself(followDto: FollowDto): boolean {
-    return followDto.userFollowedId === followDto.userFollowingId;
+    return followDto.followerId === followDto.followingId;
   }
+
   private async isFollow(followDto: FollowDto): Promise<FollowType> {
     return await prisma.follow.findFirst({
       where: {
         AND: [
-          { userFollowedId: followDto.userFollowedId },
-          { userFollowingId: followDto.userFollowingId },
+          { followingId: followDto.followingId },
+          { followerId: followDto.followerId },
         ],
       },
     });
