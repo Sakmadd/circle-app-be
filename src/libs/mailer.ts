@@ -1,9 +1,13 @@
-import nodemailer from 'nodemailer';
 import fs from 'fs';
 import mustache from 'mustache';
-import CircleError from '../utils/CircleError';
+import nodemailer from 'nodemailer';
 import path from 'path';
+import { fileURLToPath } from 'url'; // Import fileURLToPath
 import { MAILER_PASSWORD, MAILER_USERNAME } from '../configs/config';
+
+// Definisikan __filename dan __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 interface sendMailParams {
   to: string;
@@ -16,7 +20,7 @@ interface sendMailParams {
 }
 
 export async function sendMail(payload: sendMailParams) {
-  const headerPath = path.join(__dirname, '../public/header.jpg');
+  const headerPath = path.join(__dirname, '../../public/header.jpg');
   const header = fs.readFileSync(headerPath);
 
   const templatePath = path.join(__dirname, '../templates/mail-template.html');
@@ -48,6 +52,6 @@ export async function sendMail(payload: sendMailParams) {
       ],
     });
   } catch (error) {
-    throw new CircleError({ error: error });
+    throw new Error(error.message);
   }
 }

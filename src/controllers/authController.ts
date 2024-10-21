@@ -88,7 +88,7 @@ class AuthControllers {
     if (error) {
       return res.status(500).json(
         new ResponseDTO<null>({
-          error,
+          error: true,
           message: message,
           data: null,
         })
@@ -107,13 +107,14 @@ class AuthControllers {
       })
     );
   }
+
   async resetPassword(req: Request, res: Response) {
-    const requester = res.locals.user;
+    const loggedUser = res.locals.user;
     const { password } = req.body;
 
     const { error, payload, message }: ServiceResponseDTO<string> =
       await AuthServices.resetPassword({
-        email: requester.email,
+        email: loggedUser.email,
         password,
       });
 

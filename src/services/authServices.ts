@@ -8,7 +8,6 @@ import ResetPasswordDTO from '../dtos/resetPasswordDto';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import { sendMail } from '../libs/mailer';
 import { UserType } from '../types/types';
-import CircleError from '../utils/CircleError';
 import Hasher from '../utils/Hasher';
 import prismaErrorHandler from '../utils/PrismaError';
 import {
@@ -27,7 +26,7 @@ class AuthServices {
     try {
       const { success, error } = registerSchema.safeParse(registerDTO);
       if (!success) {
-        throw new CircleError({ error: error.message });
+        throw new Error(error.message);
       }
       const user = await prisma.user.create({
         data: {
@@ -60,7 +59,7 @@ class AuthServices {
   }
   async login(LoginDto: LoginDto): Promise<ServiceResponseDTO<string>> {
     const { success, error } = loginSchema.safeParse(LoginDto);
-    if (!success) throw new CircleError({ error: error.message });
+    if (!success) throw new Error(error.message);
 
     const requestedUser = await prisma.user.findUnique({
       where: {
@@ -69,9 +68,7 @@ class AuthServices {
     });
 
     if (!requestedUser) {
-      throw new CircleError({
-        error: 'The username/password was incorrect.',
-      });
+      throw new Error('The username/password was incorrect.');
     }
 
     const isPasswordValid = await Hasher.comparePassword(
@@ -80,9 +77,7 @@ class AuthServices {
     );
 
     if (!isPasswordValid) {
-      throw new CircleError({
-        error: 'The username/password was incorrect.',
-      });
+      throw new Error('The username/password was incorrect.');
     }
 
     delete requestedUser.password;
@@ -103,7 +98,7 @@ class AuthServices {
         forgotPasswordSchema.safeParse(forgotPasswordDTO);
 
       if (!success) {
-        throw new CircleError({ error: error.message });
+        throw new Error(error.message);
       }
 
       const requestedUser = await prisma.user.findUnique({
@@ -113,9 +108,7 @@ class AuthServices {
       });
 
       if (!requestedUser) {
-        throw new CircleError({
-          error: `User with ${forgotPasswordDTO.email} does not exist.`,
-        });
+        throw new Error(`User with ${forgotPasswordDTO.email} does not exist.`);
       }
 
       delete requestedUser.password;
@@ -149,7 +142,7 @@ class AuthServices {
       return new ServiceResponseDTO({
         error: true,
         payload: null,
-        message: error,
+        message: error.message,
       });
     }
   }
@@ -157,10 +150,11 @@ class AuthServices {
     resetPasswordDTO: ResetPasswordDTO
   ): Promise<ServiceResponseDTO<string>> {
     try {
-      const { error } = resetPasswordSchema.safeParse(resetPasswordDTO);
+      const { success, error } =
+        resetPasswordSchema.safeParse(resetPasswordDTO);
 
-      if (error) {
-        throw new CircleError({ error: error.message });
+      if (!success) {
+        throw new Error(error.message);
       }
 
       const updatedUser = await prisma.user.update({
@@ -173,7 +167,7 @@ class AuthServices {
       });
 
       if (!updatedUser) {
-        throw new CircleError({ error: 'Requested user does not exist.' });
+        throw new Error('Requested user does not exist.');
       }
       delete updatedUser.password;
       const token = jwt.sign(updatedUser, SECRET_SAUCE);
