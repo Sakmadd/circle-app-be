@@ -1,22 +1,22 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import { CLIENT, SECRET_SAUCE } from '../configs/config';
+import ForgotPasswordDTO from '../dtos/forgotPasswordDto';
+import LoginDto from '../dtos/loginDto';
 import RegisterDTO from '../dtos/registerDto';
+import ResetPasswordDTO from '../dtos/resetPasswordDto';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
+import { sendMail } from '../libs/mailer';
 import { UserType } from '../types/types';
 import CircleError from '../utils/CircleError';
+import Hasher from '../utils/Hasher';
+import prismaErrorHandler from '../utils/PrismaError';
 import {
   forgotPasswordSchema,
   loginSchema,
   registerSchema,
   resetPasswordSchema,
 } from '../validators/dataSchema';
-import Hasher from '../utils/Hasher';
-import prismaErrorHandler from '../utils/PrismaError';
-import LoginDto from '../dtos/loginDto';
-import jwt from 'jsonwebtoken';
-import { CLIENT, SECRET_SAUCE } from '../configs/config';
-import ForgotPasswordDTO from '../dtos/forgotPasswordDto';
-import { sendMail } from '../bs/mailer';
-import ResetPasswordDTO from '../dtos/resetPasswordDto';
 
 const prisma = new PrismaClient();
 

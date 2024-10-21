@@ -3,6 +3,7 @@ import ResponseDTO from '../dtos/ResponseDTO';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import userServices from '../services/userServices';
 import { UserType } from '../types/types';
+import UserDto from '../dtos/userDto';
 
 class UserControllers {
   async getUser(req: Request, res: Response) {
@@ -116,6 +117,29 @@ class UserControllers {
           status: 'User retrieved!',
         },
         data: payload,
+      })
+    );
+  }
+  async editUser(req: Request, res: Response) {
+    const newUserData: UserDto = req.body;
+    const loggeduser = res.locals.user;
+
+    const { error, message, payload }: ServiceResponseDTO<UserType> =
+      await userServices.editUser(newUserData, loggeduser);
+    if (error) {
+      return res.status(400).json(
+        new ResponseDTO<null>({
+          data: null,
+          error: true,
+          message: message,
+        })
+      );
+    }
+    return res.status(200).json(
+      new ResponseDTO<UserType>({
+        data: payload,
+        error: false,
+        message: message,
       })
     );
   }

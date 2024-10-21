@@ -24,4 +24,6 @@ router.get(
   userController.getLoggedUser.bind(userController)
 );
 
+router.patch('/', authenticate, userController.editUser.bind(userController));
+
 export default router;

@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "circle-app-backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,7 +7,7 @@
   },
   "type": "module",
   "keywords": [],
-  "author": "",
+  "author": "Ahmad Safii",
   "license": "ISC",
   "description": "",
   "devDependencies": {

@@ -1,8 +1,10 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import SearchDTO from '../dtos/searchDto';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
+import UserDto from '../dtos/userDto';
 import { userMoreDetailType, UserType } from '../types/types';
 import prismaErrorHandler from '../utils/PrismaError';
-import SearchDTO from '../dtos/searchDto';
+import { editUserSchema } from '../validators/dataSchema';
 
 const prisma = new PrismaClient();
 
@@ -259,6 +261,63 @@ class UserServices {
         message: error.message,
       });
     }
+  }
+  async editUser(
+    userDto: UserDto,
+    loggedUser: UserType
+  ): Promise<ServiceResponseDTO<UserType>> {
+    try {
+      const { success, error } = editUserSchema.safeParse(userDto);
+      if (!success) {
+        throw new Error(error.message);
+      }
+      const targetUser: UserType = await prisma.user.findUnique({
+        where: { id: userDto.id },
+      });
+      if (targetUser.id !== loggedUser.id) {
+        throw new Error('cant edit someone data');
+      }
+      const updatedUser: UserType = await prisma.user.update({
+        where: {
+          id: userDto.id,
+        },
+        data: this.editUserDto(userDto, targetUser),
+      });
+
+      delete updatedUser.password;
+      delete updatedUser.createdAt;
+      delete updatedUser.updatedAt;
+
+      return new ServiceResponseDTO<UserType>({
+        error: false,
+        message: 'user edited',
+        payload: updatedUser,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return new ServiceResponseDTO({
+          error: true,
+          payload: null,
+          message: prismaErrorHandler(error),
+        });
+      }
+      return new ServiceResponseDTO({
+        error: true,
+        payload: null,
+        message: error.message,
+      });
+    }
+  }
+  private editUserDto(newData: UserDto, oldData: UserType) {
+    return new UserDto({
+      id: newData.id,
+      username: newData.username || oldData.username,
+      name: newData.name || oldData.username,
+      filterContent: newData.filterContent || oldData.filterContent,
+      avatar: newData.avatar || oldData.avatar,
+      banner: newData.banner || oldData.banner,
+      bio: newData.bio || oldData.bio,
+    });
   }
 }
 

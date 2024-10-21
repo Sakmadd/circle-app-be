@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
-const regex = /^[a-zA-Z0-9_]+$/;
+const userNameRegex = /^[a-zA-Z0-9_]+$/;
+const urlPatternRegex = /(https?:\/\/[^\s]+)/g;
 
 export const registerSchema = z.object({
   name: z.string().min(4),
-  username: z.string().min(4).regex(regex),
+  username: z.string().min(4).regex(userNameRegex),
   email: z.string().email(),
   password: z.string().min(4).max(20),
   avatar: z.string().url().nullable(),
@@ -13,7 +14,7 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  username: z.string().min(4).regex(regex),
+  username: z.string().min(4).regex(userNameRegex),
   password: z.string().min(4).max(20),
 });
 
@@ -41,10 +42,24 @@ export const replySchema = z.object({
 
 export const userSchema = z.object({
   name: z.string().min(4),
-  username: z.string().min(4).regex(regex),
+  username: z.string().min(4).regex(userNameRegex),
   email: z.string().email(),
   avatar: z.string().url().nullable(),
   banner: z.string().url().nullable(),
   bio: z.string().nullable(),
+  filterContent: z.boolean(),
+});
+
+export const editUserSchema = z.object({
+  name: z.string().min(4),
+  username: z.string().min(4).regex(userNameRegex),
+  avatar: z.string().url().nullable(),
+  banner: z.string().url().nullable(),
+  bio: z
+    .string()
+    .nullable()
+    .refine((value) => {
+      return !urlPatternRegex.test(value);
+    }),
   filterContent: z.boolean(),
 });
