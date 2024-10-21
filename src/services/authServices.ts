@@ -58,37 +58,52 @@ class AuthServices {
     }
   }
   async login(LoginDto: LoginDto): Promise<ServiceResponseDTO<string>> {
-    const { success, error } = loginSchema.safeParse(LoginDto);
-    if (!success) throw new Error(error.message);
+    try {
+      const { success, error } = loginSchema.safeParse(LoginDto);
+      if (!success) throw new Error(error.message);
 
-    const requestedUser = await prisma.user.findUnique({
-      where: {
-        username: LoginDto.username,
-      },
-    });
+      const requestedUser = await prisma.user.findUnique({
+        where: {
+          username: LoginDto.username,
+        },
+      });
 
-    if (!requestedUser) {
-      throw new Error('The username/password was incorrect.');
+      if (!requestedUser) {
+        throw new Error('The username/password was incorrect.');
+      }
+
+      const isPasswordValid = await Hasher.comparePassword(
+        LoginDto.password,
+        requestedUser.password
+      );
+
+      if (!isPasswordValid) {
+        throw new Error('The username/password was incorrect.');
+      }
+
+      delete requestedUser.password;
+
+      const token = jwt.sign(requestedUser, SECRET_SAUCE);
+
+      return new ServiceResponseDTO<string>({
+        error: false,
+        payload: token,
+        message: null,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return new ServiceResponseDTO({
+          error: true,
+          payload: null,
+          message: prismaErrorHandler(error),
+        });
+      }
+      return new ServiceResponseDTO({
+        error: true,
+        payload: null,
+        message: error.message,
+      });
     }
-
-    const isPasswordValid = await Hasher.comparePassword(
-      LoginDto.password,
-      requestedUser.password
-    );
-
-    if (!isPasswordValid) {
-      throw new Error('The username/password was incorrect.');
-    }
-
-    delete requestedUser.password;
-
-    const token = jwt.sign(requestedUser, SECRET_SAUCE);
-
-    return new ServiceResponseDTO<string>({
-      error: false,
-      payload: token,
-      message: null,
-    });
   }
   async forgotPassword(
     forgotPasswordDTO: ForgotPasswordDTO
@@ -169,6 +184,7 @@ class AuthServices {
       if (!updatedUser) {
         throw new Error('Requested user does not exist.');
       }
+
       delete updatedUser.password;
       const token = jwt.sign(updatedUser, SECRET_SAUCE);
 
