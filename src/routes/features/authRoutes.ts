@@ -4,10 +4,10 @@ import { authenticate } from '../../middlewares/authenticate';
 
 const router = Router();
 
-router.get('/login', authController.login.bind(authController));
+router.post('/login', authController.login.bind(authController));
 router.post('/register', authController.register.bind(authController));
-router.get('/forgot', authController.forgotPassword.bind(authController));
-router.get(
+router.post('/forgot', authController.forgotPassword.bind(authController));
+router.patch(
   '/reset',
   authenticate,
   authController.resetPassword.bind(authController)

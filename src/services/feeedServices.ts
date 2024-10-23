@@ -165,8 +165,6 @@ class FeedServices {
   }
   async createFeed(feedDto: FeedDto): Promise<ServiceResponseDTO<FeedType>> {
     try {
-      console.log(feedDto);
-
       const createdFeed = await prisma.feed.create({
         data: feedDto,
       });

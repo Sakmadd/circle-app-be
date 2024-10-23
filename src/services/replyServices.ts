@@ -9,7 +9,6 @@ const prisma = new PrismaClient();
 
 class ReplyServices {
   async createReply(replyDto: ReplyDto): Promise<ServiceResponseDTO<ReplyDto>> {
-    console.log(replyDto);
     try {
       const { success, error } = replySchema.safeParse(replyDto);
       if (!success) {
