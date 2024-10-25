@@ -10,7 +10,7 @@ router.delete(
   replyController.deleteReply.bind(replyController)
 );
 router.post(
-  '/create/:id',
+  '/create',
   authenticate,
   replyController.createReply.bind(replyController)
 );

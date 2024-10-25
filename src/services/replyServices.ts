@@ -48,6 +48,9 @@ class ReplyServices {
       const selectedReply = await prisma.reply.findUnique({
         where: { id },
       });
+      if (!selectedReply) {
+        throw new Error('Reply Not Found');
+      }
       if (selectedReply.userId !== loggedUser.id) {
         throw new Error('cant delete someone reply');
       }

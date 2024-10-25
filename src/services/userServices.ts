@@ -159,27 +159,33 @@ class UserServices {
         ...rawuser,
         totalFollowers: rawuser.followers.length,
         totalFollowings: rawuser.followings.length,
-        feeds: rawuser.feeds.map((feed) => {
-          const replies = feed.replies;
-          const likes = feed.likes;
+        feeds: rawuser.feeds
+          .sort((a, b) => {
+            const feedA = a.createdAt.getTime();
+            const feedB = b.createdAt.getTime();
 
-          delete feed.replies;
-          delete feed.likes;
-          delete feed.createdAt;
+            return feedB - feedA;
+          })
+          .map((feed) => {
+            const replies = feed.replies;
+            const likes = feed.likes;
 
-          delete loggedUser.createdAt;
-          delete loggedUser.updatedAt;
+            delete feed.replies;
+            delete feed.likes;
 
-          return {
-            ...feed,
-            author: loggedUser,
-            totalLikes: likes.length,
-            totalReplies: replies.length,
-            isLiked: likes.some((like) => {
-              return like.userId === loggedUser.id;
-            }),
-          };
-        }),
+            delete loggedUser.createdAt;
+            delete loggedUser.updatedAt;
+
+            return {
+              ...feed,
+              author: loggedUser,
+              totalLikes: likes.length,
+              totalReplies: replies.length,
+              isLiked: likes.some((like) => {
+                return like.userId === loggedUser.id;
+              }),
+            };
+          }),
       };
       delete user.password;
       delete user.createdAt;

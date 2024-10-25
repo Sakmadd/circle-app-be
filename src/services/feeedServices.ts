@@ -41,7 +41,61 @@ class FeedServices {
           const feedA = a.createdAt.getTime();
           const feedB = b.createdAt.getTime();
 
-          return feedA - feedB;
+          return feedB - feedA;
+        }),
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return new ServiceResponseDTO({
+          error: true,
+          payload: null,
+          message: prismaErrorHandler(error),
+        });
+      }
+      return new ServiceResponseDTO({
+        error: true,
+        payload: null,
+        message: error.message,
+      });
+    }
+  }
+  async getUserFeeds(
+    id: number
+  ): Promise<ServiceResponseDTO<FeedMoreDetailType[]>> {
+    try {
+      const rawFeeds: FeedMoreDetailType[] = await prisma.feed.findMany({
+        where: {
+          authorId: id,
+        },
+        include: {
+          likes: true,
+          replies: true,
+        },
+      });
+
+      if (rawFeeds.length === 0) {
+        throw new Error('user does not have any feed');
+      }
+
+      const feeds: FeedMoreDetailType[] = rawFeeds.map((feed) => {
+        delete feed.updatedAt;
+        const { replies, likes, ...rest } = feed;
+
+        return {
+          ...rest,
+          totalReplies: replies.length,
+          totalLikes: likes.length,
+        };
+      });
+
+      return new ServiceResponseDTO<FeedMoreDetailType[]>({
+        error: false,
+        message: 'feeds delivered',
+        payload: feeds.sort((a, b) => {
+          const feedA = a.createdAt.getTime();
+          const feedB = b.createdAt.getTime();
+
+          return feedB - feedA;
         }),
       });
     } catch (error) {
@@ -99,54 +153,6 @@ class FeedServices {
         error: false,
         message: 'feed delivered',
         payload: feed,
-      });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        return new ServiceResponseDTO({
-          error: true,
-          payload: null,
-          message: prismaErrorHandler(error),
-        });
-      }
-      return new ServiceResponseDTO({
-        error: true,
-        payload: null,
-        message: error.message,
-      });
-    }
-  }
-  async getUserFeeds(
-    id: number
-  ): Promise<ServiceResponseDTO<FeedMoreDetailType[]>> {
-    try {
-      const rawFeed: FeedMoreDetailType[] = await prisma.feed.findMany({
-        where: {
-          authorId: id,
-        },
-        include: {
-          likes: true,
-          replies: true,
-        },
-      });
-
-      if (!rawFeed) {
-        throw new Error('user does not have any feed');
-      }
-
-      const feeds: FeedMoreDetailType[] = rawFeed.map((feed) => {
-        const { likes, replies, ...rest } = feed;
-
-        return {
-          ...rest,
-          totalLikes: likes.length,
-          totalReplies: replies.length,
-        };
-      });
-
-      return new ServiceResponseDTO<FeedMoreDetailType[]>({
-        error: false,
-        message: 'feed delivered',
-        payload: feeds,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
