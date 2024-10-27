@@ -5,6 +5,8 @@ import UserDto from '../dtos/userDto';
 import { userMoreDetailType, UserType } from '../types/types';
 import prismaErrorHandler from '../utils/PrismaError';
 import { editUserSchema } from '../validators/dataSchema';
+import { cloudUploader } from '../utils/cloudUploader';
+import { isBase64Image } from '../utils/isBase64Image';
 
 const prisma = new PrismaClient();
 
@@ -283,6 +285,17 @@ class UserServices {
       if (targetUser.id !== loggedUser.id) {
         throw new Error('cant edit someone data');
       }
+
+      if (isBase64Image(userDto.avatar)) {
+        const result = await cloudUploader(userDto.avatar);
+        userDto.avatar = result.secure_url;
+      }
+
+      if (isBase64Image(userDto.banner)) {
+        const result = await cloudUploader(userDto.banner);
+        userDto.banner = result.secure_url;
+      }
+
       const updatedUser: UserType = await prisma.user.update({
         where: {
           id: userDto.id,

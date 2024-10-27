@@ -200,13 +200,29 @@ class FeedServices {
     loggedUser: UserType
   ): Promise<ServiceResponseDTO<FeedType>> {
     try {
-      const targetFeed: FeedType = await prisma.feed.findUnique({
+      const targetFeed: FeedType | null = await prisma.feed.findUnique({
         where: { id },
       });
 
-      if (loggedUser.id !== targetFeed.authorId) {
-        throw new Error('cant delete someone Feed');
+      if (!targetFeed) {
+        return new ServiceResponseDTO({
+          error: true,
+          payload: null,
+          message: 'Feed not found',
+        });
       }
+
+      if (loggedUser.id !== targetFeed.authorId) {
+        return new ServiceResponseDTO({
+          error: true,
+          payload: null,
+          message: "Cannot delete someone else's feed",
+        });
+      }
+
+      await prisma.like.deleteMany({
+        where: { feedId: targetFeed.id },
+      });
 
       const deletedFeed: FeedType = await prisma.feed.delete({
         where: { id: targetFeed.id },
@@ -214,17 +230,10 @@ class FeedServices {
 
       return new ServiceResponseDTO<FeedType>({
         error: false,
-        message: 'feed deleted',
+        message: 'Feed deleted',
         payload: deletedFeed,
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        return new ServiceResponseDTO({
-          error: true,
-          payload: null,
-          message: prismaErrorHandler(error),
-        });
-      }
       return new ServiceResponseDTO({
         error: true,
         payload: null,
