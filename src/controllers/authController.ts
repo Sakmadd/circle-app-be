@@ -7,9 +7,8 @@ import { UserType } from '../types/types';
 class AuthControllers {
   async register(req: Request, res: Response) {
     const avatar =
-      'https://api.dicebear.com/8.x/thumbs/svg?seed=Lucy&backgroundColor=f1f4dc&translateX=-5&shapeColor=f1f4dc';
-    const banner =
-      'https://api.dicebear.com/9.x/thumbs/svg?seed=Bandit&backgroundColor=f1f4dc&eyesColor=transparent&mouthColor=transparent';
+      'https://api.dicebear.com/9.x/thumbs/svg?backgroundColor=ffdfbf';
+    const banner = '/src/assets/default-bg.png';
     const { username, email, name, password, bio } = req.body;
 
     const { error, payload, message }: ServiceResponseDTO<UserType> =

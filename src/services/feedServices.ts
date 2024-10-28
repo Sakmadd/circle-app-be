@@ -3,6 +3,7 @@ import FeedDto from '../dtos/feedDto';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import { FeedMoreDetailType, FeedType, UserType } from '../types/types';
 import prismaErrorHandler from '../utils/PrismaError';
+import { feedSchema } from '../validators/dataSchema';
 
 const prisma = new PrismaClient();
 
@@ -171,6 +172,12 @@ class FeedServices {
   }
   async createFeed(feedDto: FeedDto): Promise<ServiceResponseDTO<FeedType>> {
     try {
+      const { success, error } = feedSchema.safeParse(feedDto);
+
+      if (!success) {
+        throw new Error(error.message);
+      }
+
       const createdFeed = await prisma.feed.create({
         data: feedDto,
       });

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import feedController from '../../controllers/feedController';
 import { authenticate } from '../../middlewares/authenticate';
+import uploader from '../../middlewares/uploader';
 
 const router = Router();
 
@@ -15,7 +16,12 @@ router.get(
   authenticate,
   feedController.getUserFeeds.bind(feedController)
 );
-router.post('/', authenticate, feedController.createFeed.bind(feedController));
+router.post(
+  '/',
+  uploader.single('image'),
+  authenticate,
+  feedController.createFeed.bind(feedController)
+);
 router.delete(
   '/:id',
   authenticate,

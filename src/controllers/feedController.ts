@@ -82,7 +82,7 @@ class FeedControllers {
   }
   async createFeed(req: Request, res: Response) {
     const loggedUser = res.locals.user;
-    const image = null;
+    const image = req.file?.path || null;
     const { content } = req.body;
 
     const { error, message, payload }: ServiceResponseDTO<FeedType> =
