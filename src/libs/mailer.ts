@@ -2,12 +2,7 @@ import fs from 'fs';
 import mustache from 'mustache';
 import nodemailer from 'nodemailer';
 import path from 'path';
-import { fileURLToPath } from 'url'; // Import fileURLToPath
 import { MAILER_PASSWORD, MAILER_USERNAME } from '../configs/config';
-
-// Definisikan __filename dan __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 interface sendMailParams {
   to: string;
