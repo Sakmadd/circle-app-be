@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import replyController from '../../controllers/replyController';
 import { authenticate } from '../../middlewares/authenticate';
+import uploader from '../../middlewares/uploader';
 
 const router = Router();
 
@@ -11,6 +12,7 @@ router.delete(
 );
 router.post(
   '/create',
+  uploader.single('image'),
   authenticate,
   replyController.createReply.bind(replyController)
 );

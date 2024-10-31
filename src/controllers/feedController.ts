@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import ResponseDTO from '../dtos/ResponseDTO';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
-import feeedServices from '../services/feeedServices';
 import { FeedMoreDetailType, FeedType, UserType } from '../types/types';
+import feedServices from '../services/feedServices';
 
 class FeedControllers {
   async getFeeds(req: Request, res: Response) {
@@ -12,7 +12,7 @@ class FeedControllers {
       error,
       message,
       payload,
-    }: ServiceResponseDTO<FeedMoreDetailType[]> = await feeedServices.getFeeds(
+    }: ServiceResponseDTO<FeedMoreDetailType[]> = await feedServices.getFeeds(
       loggedUser
     );
     if (error) {
@@ -37,7 +37,7 @@ class FeedControllers {
     const { id } = req.params;
 
     const { error, message, payload }: ServiceResponseDTO<FeedMoreDetailType> =
-      await feeedServices.getSingleFeed(+id, loggedUser);
+      await feedServices.getSingleFeed(+id, loggedUser);
     if (error) {
       return res.status(400).json(
         new ResponseDTO<null>({
@@ -60,7 +60,7 @@ class FeedControllers {
     const { id } = req.params;
 
     const { error, message, payload }: ServiceResponseDTO<FeedType[]> =
-      await feeedServices.getUserFeeds(+id);
+      await feedServices.getUserFeeds(+id);
 
     if (error) {
       return res.status(400).json(
@@ -82,11 +82,11 @@ class FeedControllers {
   }
   async createFeed(req: Request, res: Response) {
     const loggedUser = res.locals.user;
-    const image = null;
+    const image = req.file?.path || null;
     const { content } = req.body;
 
     const { error, message, payload }: ServiceResponseDTO<FeedType> =
-      await feeedServices.createFeed({
+      await feedServices.createFeed({
         content,
         image,
         authorId: loggedUser.id,
@@ -113,7 +113,7 @@ class FeedControllers {
     const { id } = req.params;
 
     const { error, message, payload }: ServiceResponseDTO<FeedType> =
-      await feeedServices.deleteFeed(+id, loggedUser);
+      await feedServices.deleteFeed(+id, loggedUser);
 
     if (error) {
       return res.status(400).json(

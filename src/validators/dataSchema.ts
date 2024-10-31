@@ -9,7 +9,7 @@ export const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(4).max(20),
   avatar: z.string().url().nullable(),
-  banner: z.string().url().nullable(),
+  banner: z.string().nullable(),
   bio: z.string().nullable(),
 });
 

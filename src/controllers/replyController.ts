@@ -7,7 +7,7 @@ import ResponseDTO from '../dtos/ResponseDTO';
 class replyController {
   async createReply(req: Request, res: Response) {
     const loggedUser = res.locals.user;
-    const image = null;
+    const image = req.file?.path || null;
     const { content, id } = req.body;
 
     const { error, message, payload }: ServiceResponseDTO<ReplyDto> =
