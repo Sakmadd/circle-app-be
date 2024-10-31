@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npm install",
     "postinstall": "prisma generate",
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json"
