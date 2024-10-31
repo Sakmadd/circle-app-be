@@ -1,13 +1,12 @@
 {
   "builds": [
     {
-      "src": "src/index.ts",
+      "src": "dist/index.js",
       "use": "@vercel/node"
     }
   ],
   "installCommand": "npm install",
   "buildCommand": "npm run build",
-  "outputDirectory": "../dist",
   "headers": [
     {
       "source": "/(.*)",
@@ -28,7 +27,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/src/index.ts"
+      "destination": "/dist/index.js"
     }
   ]
 }
