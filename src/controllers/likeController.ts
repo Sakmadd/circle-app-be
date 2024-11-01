@@ -3,6 +3,7 @@ import ResponseDTO from '../dtos/ResponseDTO';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import { LikeType } from '../types/types';
 import likeServices from '../services/likeServices';
+import Redis from '../middlewares/redis';
 
 class likeController {
   async likeLogic(req: Request, res: Response) {
@@ -24,6 +25,8 @@ class likeController {
         })
       );
     }
+
+    await Redis.delFeeds();
 
     return res.status(200).json(
       new ServiceResponseDTO<LikeType>({

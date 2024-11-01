@@ -3,6 +3,7 @@ import ResponseDTO from '../dtos/ResponseDTO';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import { FeedMoreDetailType, FeedType, UserType } from '../types/types';
 import feedServices from '../services/feedServices';
+import Redis from '../middlewares/redis';
 
 class FeedControllers {
   async getFeeds(req: Request, res: Response) {
@@ -24,6 +25,9 @@ class FeedControllers {
         })
       );
     }
+
+    await Redis.setFeeds(payload);
+
     return res.status(200).json(
       new ResponseDTO<FeedMoreDetailType[]>({
         data: payload,
@@ -100,6 +104,9 @@ class FeedControllers {
         })
       );
     }
+
+    await Redis.delFeeds();
+
     return res.status(200).json(
       new ResponseDTO<FeedType>({
         data: payload,
@@ -124,6 +131,9 @@ class FeedControllers {
         })
       );
     }
+
+    await Redis.delFeeds();
+
     return res.status(200).json(
       new ResponseDTO<FeedType>({
         data: payload,

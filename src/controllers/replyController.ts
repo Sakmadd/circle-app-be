@@ -3,6 +3,7 @@ import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import ReplyDto from '../dtos/replyDto';
 import replyServices from '../services/replyServices';
 import ResponseDTO from '../dtos/ResponseDTO';
+import Redis from '../middlewares/redis';
 
 class replyController {
   async createReply(req: Request, res: Response) {
@@ -26,6 +27,9 @@ class replyController {
         })
       );
     }
+
+    await Redis.delFeeds();
+
     return res.status(200).json(
       new ResponseDTO<ReplyDto>({
         data: payload,
@@ -49,6 +53,9 @@ class replyController {
         })
       );
     }
+
+    await Redis.delFeeds();
+
     return res.status(200).json(
       new ResponseDTO<ReplyDto>({
         data: payload,
