@@ -7,3 +7,4 @@ export const MAILER_USERNAME = process.env.MAILER_USERNAME;
 export const MAILER_PASSWORD = process.env.MAILER_PASSWORD;
 export const CLIENT = process.env.CLIENT;
 export const REDIS_URL = process.env.REDIS_URL;
+export const HOST = process.env.HOST;
