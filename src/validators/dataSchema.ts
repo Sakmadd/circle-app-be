@@ -3,6 +3,11 @@ import { z } from 'zod';
 const userNameRegex = /^[a-zA-Z0-9_]+$/;
 const urlPatternRegex = /(https?:\/\/[^\s]+)/g;
 
+const base64PatternRegex = /^data:image\/[a-zA-Z]+;base64,/;
+const urlOrBase64Regex = new RegExp(
+  `(${urlPatternRegex.source})|(${base64PatternRegex.source})`
+);
+
 export const registerSchema = z.object({
   name: z.string().min(4),
   username: z.string().min(4).regex(userNameRegex),
@@ -51,6 +56,7 @@ export const userSchema = z.object({
 });
 
 export const editUserSchema = z.object({
+  id: z.string(),
   name: z.string().min(4),
   username: z.string().min(4).regex(userNameRegex),
   avatar: z.string().url().nullable(),

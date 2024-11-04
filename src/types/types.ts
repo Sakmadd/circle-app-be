@@ -60,3 +60,10 @@ export interface FeedMoreDetailType extends FeedType {
   totalLikes?: number;
   totalReplies?: number;
 }
+
+export interface ProviderUserData {
+  id: string;
+  email: string;
+  name: string;
+  username: string;
+}

@@ -7,7 +7,7 @@ import RegisterDTO from '../dtos/registerDto';
 import ResetPasswordDTO from '../dtos/resetPasswordDto';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import { sendMail } from '../libs/mailer';
-import { UserType } from '../types/types';
+import { ProviderUserData, UserType } from '../types/types';
 import Hasher from '../utils/Hasher';
 import prismaErrorHandler from '../utils/PrismaError';
 import {
@@ -236,27 +236,61 @@ class AuthServices {
       });
     }
   }
-  async getOrCreateUser(supabaseUser: any): Promise<UserType> {
-    let user = await prisma.user.findUnique({
-      where: { id: supabaseUser.id },
-    });
+  async getOrCreateUser(
+    providerUser: ProviderUserData
+  ): Promise<ServiceResponseDTO<string>> {
+    const avatar =
+      'https://api.dicebear.com/9.x/thumbs/svg?backgroundColor=ffdfbf';
+    const banner = '/src/assets/default-bg.png';
+    try {
+      let user = await prisma.user.findUnique({
+        where: { id: providerUser.id },
+      });
 
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          id: supabaseUser.id,
-          username: supabaseUser.user_metadata?.username || 'username_baru',
-          email: supabaseUser.email,
-          name: supabaseUser.user_metadata?.name || 'User Baru',
-          password: null,
-          avatar: supabaseUser.user_metadata?.picture || '',
-          banner: '',
-          bio: '',
-        },
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            id: providerUser.id,
+            avatar,
+            banner,
+            username: providerUser.username,
+            email: providerUser.email,
+            name: providerUser.name,
+            password: await Hasher.hashPassword('awdaofheanfofoknwqdmhoewihd'),
+          },
+        });
+        delete user.password;
+
+        const token = jwt.sign(user, SECRET_SAUCE);
+
+        return new ServiceResponseDTO<string>({
+          error: false,
+          payload: token,
+          message: null,
+        });
+      }
+
+      const token = jwt.sign(user, SECRET_SAUCE);
+
+      return new ServiceResponseDTO<string>({
+        error: false,
+        payload: token,
+        message: null,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return new ServiceResponseDTO({
+          error: true,
+          payload: null,
+          message: prismaErrorHandler(error),
+        });
+      }
+      return new ServiceResponseDTO({
+        error: true,
+        payload: null,
+        message: error.message,
       });
     }
-
-    return user;
   }
 }
 

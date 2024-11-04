@@ -11,6 +11,10 @@ router.post(
   '/login/:provider',
   authController.loginWithProvider.bind(authController)
 );
+router.post(
+  '/callback',
+  authController.getOrCreateUserProvider.bind(authController)
+);
 router.patch(
   '/reset',
   authenticate,

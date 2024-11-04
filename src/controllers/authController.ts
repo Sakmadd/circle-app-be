@@ -3,7 +3,8 @@ import { Request, Response } from 'express';
 import ResponseDTO from '../dtos/ResponseDTO';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import AuthServices from '../services/authServices';
-import { UserType } from '../types/types';
+import { ProviderUserData, UserType } from '../types/types';
+import authServices from '../services/authServices';
 const prisma = new PrismaClient();
 
 class AuthControllers {
@@ -38,6 +39,34 @@ class AuthControllers {
         error,
         message: {
           status: 'Redirect to the login URL to complete the process.',
+        },
+        data: payload,
+      })
+    );
+  }
+  async getOrCreateUserProvider(req: Request, res: Response) {
+    const avatar =
+      'https://api.dicebear.com/9.x/thumbs/svg?backgroundColor=ffdfbf';
+    const banner = '/src/assets/default-bg.png';
+    const { id, username, email, name } = req.body;
+    const { error, payload, message }: ServiceResponseDTO<string> =
+      await AuthServices.getOrCreateUser({ email, id, name, username });
+
+    if (error) {
+      return res.status(500).json(
+        new ResponseDTO<null>({
+          error,
+          message: message,
+          data: payload,
+        })
+      );
+    }
+
+    return res.status(200).json(
+      new ResponseDTO<string>({
+        error,
+        message: {
+          status: 'User created!',
         },
         data: payload,
       })

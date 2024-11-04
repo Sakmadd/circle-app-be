@@ -3,10 +3,9 @@ import SearchDTO from '../dtos/searchDto';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import UserDto from '../dtos/userDto';
 import { userMoreDetailType, UserType } from '../types/types';
-import prismaErrorHandler from '../utils/PrismaError';
-import { editUserSchema } from '../validators/dataSchema';
 import { cloudUploader } from '../utils/cloudUploader';
 import { isBase64Image } from '../utils/isBase64Image';
+import prismaErrorHandler from '../utils/PrismaError';
 
 const prisma = new PrismaClient();
 
@@ -275,13 +274,10 @@ class UserServices {
     loggedUser: UserType
   ): Promise<ServiceResponseDTO<UserType>> {
     try {
-      const { success, error } = editUserSchema.safeParse(userDto);
-      if (!success) {
-        throw new Error(error.message);
-      }
       const targetUser: UserType = await prisma.user.findUnique({
         where: { id: userDto.id },
       });
+
       if (targetUser.id !== loggedUser.id) {
         throw new Error('cant edit someone data');
       }
@@ -323,7 +319,7 @@ class UserServices {
       return new ServiceResponseDTO({
         error: true,
         payload: null,
-        message: error.message,
+        message: error,
       });
     }
   }
