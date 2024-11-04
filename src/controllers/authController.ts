@@ -1,10 +1,49 @@
+import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import ResponseDTO from '../dtos/ResponseDTO';
 import ServiceResponseDTO from '../dtos/serviceResponseDto';
 import AuthServices from '../services/authServices';
 import { UserType } from '../types/types';
+const prisma = new PrismaClient();
 
 class AuthControllers {
+  async loginWithProvider(req: Request, res: Response) {
+    const { provider } = req.params;
+
+    if (!['google', 'facebook'].includes(provider)) {
+      return res.status(400).json(
+        new ResponseDTO<null>({
+          error: true,
+          message: 'Invalid provider specified.',
+          data: null,
+        })
+      );
+    }
+
+    const { error, payload, message }: ServiceResponseDTO<string> =
+      await AuthServices.loginWithProvider(provider as 'google' | 'facebook');
+
+    if (error) {
+      return res.status(500).json(
+        new ResponseDTO<null>({
+          error,
+          message,
+          data: null,
+        })
+      );
+    }
+
+    return res.status(200).json(
+      new ResponseDTO<string>({
+        error,
+        message: {
+          status: 'Redirect to the login URL to complete the process.',
+        },
+        data: payload,
+      })
+    );
+  }
+
   async register(req: Request, res: Response) {
     const avatar =
       'https://api.dicebear.com/9.x/thumbs/svg?backgroundColor=ffdfbf';

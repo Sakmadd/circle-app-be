@@ -16,10 +16,38 @@ import {
   registerSchema,
   resetPasswordSchema,
 } from '../validators/dataSchema';
+import { supabase } from '../libs/supabase';
 
 const prisma = new PrismaClient();
 
 class AuthServices {
+  async loginWithProvider(
+    provider: 'google' | 'facebook'
+  ): Promise<ServiceResponseDTO<string>> {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `http://localhost:5173/auth/callback`,
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      return new ServiceResponseDTO<string>({
+        error: false,
+        payload: data.url || '',
+        message: 'Redirect to the login URL to complete the process.',
+      });
+    } catch (error) {
+      return new ServiceResponseDTO({
+        error: true,
+        payload: null,
+        message: error.message,
+      });
+    }
+  }
   async register(
     registerDTO: RegisterDTO
   ): Promise<ServiceResponseDTO<UserType>> {
@@ -207,6 +235,28 @@ class AuthServices {
         message: error,
       });
     }
+  }
+  async getOrCreateUser(supabaseUser: any): Promise<UserType> {
+    let user = await prisma.user.findUnique({
+      where: { id: supabaseUser.id },
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          id: supabaseUser.id,
+          username: supabaseUser.user_metadata?.username || 'username_baru',
+          email: supabaseUser.email,
+          name: supabaseUser.user_metadata?.name || 'User Baru',
+          password: null,
+          avatar: supabaseUser.user_metadata?.picture || '',
+          banner: '',
+          bio: '',
+        },
+      });
+    }
+
+    return user;
   }
 }
 

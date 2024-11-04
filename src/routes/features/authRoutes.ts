@@ -7,6 +7,10 @@ const router = Router();
 router.post('/login', authController.login.bind(authController));
 router.post('/register', authController.register.bind(authController));
 router.post('/forgot', authController.forgotPassword.bind(authController));
+router.post(
+  '/login/:provider',
+  authController.loginWithProvider.bind(authController)
+);
 router.patch(
   '/reset',
   authenticate,

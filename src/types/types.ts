@@ -1,5 +1,5 @@
 export interface UserType {
-  id: number;
+  id: string;
   username: string;
   email: string;
   name: string;
@@ -21,15 +21,15 @@ export interface userMoreDetailType extends UserType {
 
 export interface FollowType {
   id: number;
-  followerId: number;
-  followingId: number;
+  followerId: string;
+  followingId: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface LikeType {
   id: number;
-  userId: number;
+  userId: string;
   feedId: number;
   createdAt: Date;
   updatedAt: Date;
@@ -49,7 +49,7 @@ export interface FeedType {
   image: string;
   createdAt: Date;
   updatedAt: Date;
-  authorId: number;
+  authorId: string;
 }
 
 export interface FeedMoreDetailType extends FeedType {

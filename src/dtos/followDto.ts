@@ -1,6 +1,6 @@
 class FollowDto {
-  followerId: number;
-  followingId: number;
+  followerId: string;
+  followingId: string;
   constructor({ followerId, followingId }) {
     this.followerId = followerId;
     this.followingId = followingId;

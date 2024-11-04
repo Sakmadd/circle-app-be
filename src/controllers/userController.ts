@@ -11,7 +11,7 @@ class UserControllers {
     const { id } = req.params;
 
     const { error, message, payload }: ServiceResponseDTO<UserType> =
-      await userServices.getUser(+id, loggedUser);
+      await userServices.getUser(id, loggedUser);
 
     if (error) {
       return res.status(400).json(

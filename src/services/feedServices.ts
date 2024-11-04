@@ -61,7 +61,7 @@ class FeedServices {
     }
   }
   async getUserFeeds(
-    id: number
+    id: string
   ): Promise<ServiceResponseDTO<FeedMoreDetailType[]>> {
     try {
       const rawFeeds: FeedMoreDetailType[] = await prisma.feed.findMany({

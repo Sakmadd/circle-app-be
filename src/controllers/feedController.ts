@@ -64,7 +64,7 @@ class FeedControllers {
     const { id } = req.params;
 
     const { error, message, payload }: ServiceResponseDTO<FeedType[]> =
-      await feedServices.getUserFeeds(+id);
+      await feedServices.getUserFeeds(id);
 
     if (error) {
       return res.status(400).json(

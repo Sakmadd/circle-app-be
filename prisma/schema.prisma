@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
   username String @unique
   email String @unique
   name String
@@ -32,14 +32,14 @@ model User {
 }
 
 model Feed {
-id            Int       @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   content       String
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   author        User      @relation(fields: [authorId], references: [id], name: "userFeeds",  onDelete: Cascade)
-  authorId      Int
+  authorId      String
 
   replies       Reply[]   @relation("feedReplies")
   likes         Like[]    @relation("feedLikes")
@@ -58,7 +58,7 @@ model Reply {
 
   repliedBy User @relation(fields: [userId], references: [id], name: "userReplies", onDelete: Cascade)
   repliedIn Feed @relation(fields: [feedId], references: [id], name: "feedReplies", onDelete: Cascade)
-  userId Int
+  userId String
   feedId Int
 
   @@map("replies")
@@ -72,7 +72,7 @@ model Like {
 
   likedBy User @relation(fields: [userId], references: [id], name: "userLikes")
   likedin Feed @relation(fields: [feedId], references: [id], name: "feedLikes")
-  userId Int
+  userId String
   feedId Int
 
   @@map("likes")
@@ -84,9 +84,9 @@ model Follow {
   updatedAt       DateTime @updatedAt
 
   follower        User     @relation(fields: [followerId], references: [id], onDelete: Cascade, name: "userFollower") 
-  followerId      Int
+  followerId      String
   following       User     @relation(fields: [followingId], references: [id], onDelete: Cascade, name: "userFollowing")
-  followingId     Int
+  followingId     String
 
   @@map("follows")
 }

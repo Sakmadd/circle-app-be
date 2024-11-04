@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 
 class UserServices {
   async getUser(
-    id: number,
+    id: string,
     loggedUser: UserType
   ): Promise<ServiceResponseDTO<UserType>> {
     try {

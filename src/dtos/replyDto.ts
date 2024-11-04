@@ -1,7 +1,7 @@
 class ReplyDto {
   image: string;
   content: string;
-  userId: number;
+  userId: string;
   feedId: number;
 
   constructor({ userId, feedId, image, content }) {

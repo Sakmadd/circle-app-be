@@ -1,5 +1,5 @@
 class UserDto {
-  id: number;
+  id: string;
   username: string | null;
   name: string | null;
   filterContent: boolean;

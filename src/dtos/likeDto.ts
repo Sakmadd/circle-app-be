@@ -1,5 +1,5 @@
 class LikeDto {
-  userId: number;
+  userId: string;
   feedId: number;
   constructor({ userId, feedId }) {
     this.userId = userId;
