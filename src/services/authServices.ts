@@ -241,7 +241,7 @@ class AuthServices {
   ): Promise<ServiceResponseDTO<string>> {
     const avatar =
       'https://api.dicebear.com/9.x/thumbs/svg?backgroundColor=ffdfbf';
-    const banner = '/src/assets/default-bg.png';
+    const banner = '/assets/default-bg.png';
     try {
       let user = await prisma.user.findUnique({
         where: { id: providerUser.id },
