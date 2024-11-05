@@ -3,13 +3,9 @@
   "builds": [
     {
       "src": "src/index.ts",
-      "use": "@now/node"
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["build/**"] }
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/index.ts"
-    }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }

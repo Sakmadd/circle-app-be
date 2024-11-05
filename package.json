@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npx prisma ",
+    "postinstall": "prisma generate",
     "build": "tsc && copyfiles -u 1 src/public/header.jpg dist && copyfiles -u 1 src/templates/mail-template.html dist && prisma generate",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
