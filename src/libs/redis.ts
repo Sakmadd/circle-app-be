@@ -1,14 +1,7 @@
-import { RedisClientType } from '@redis/client';
-import { createClient } from 'redis';
-import { REDIS_URL } from '../configs/config';
+import { Redis } from '@upstash/redis';
+import { UPSTASH_REDIS_TOKEN, UPSTASH_REDIS_URL } from '../configs/config';
 
-export let redisClient: RedisClientType<any, any, any>;
-export async function initRedis() {
-  redisClient = await createClient({
-    url: `${REDIS_URL}`,
-  })
-    .on('error', (e) => {
-      throw new Error(`Redis Client Error : ${e}`);
-    })
-    .connect();
-}
+export const redis = new Redis({
+  url: UPSTASH_REDIS_URL,
+  token: UPSTASH_REDIS_TOKEN,
+});

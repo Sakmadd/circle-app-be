@@ -1,18 +1,17 @@
 import { NextFunction, Response, Request } from 'express';
-import { redisClient } from '../libs/redis';
 import ResponseDTO from '../dtos/ResponseDTO';
 import { FeedMoreDetailType, FeedType } from '../types/types';
+import { redis } from '../libs/redis';
 
 class Redis {
   async getFeeds(req: Request, res: Response, next: NextFunction) {
-    const rawFeeds = await redisClient.get('FEEDS');
-    const feeds = JSON.parse(rawFeeds);
+    const rawFeeds = await redis.get('FEEDS');
 
-    if (feeds) {
+    if (rawFeeds) {
       return res.status(200).json(
         new ResponseDTO<FeedMoreDetailType[]>({
           error: false,
-          data: feeds,
+          data: rawFeeds,
           message: 'Feed Delivered',
         })
       );
@@ -21,10 +20,10 @@ class Redis {
   }
 
   async setFeeds(feeds: FeedType[]) {
-    await redisClient.set('FEEDS', JSON.stringify(feeds));
+    await redis.set('FEEDS', JSON.stringify(feeds));
   }
   async delFeeds() {
-    await redisClient.del('FEEDS');
+    await redis.del('FEEDS');
   }
 }
 

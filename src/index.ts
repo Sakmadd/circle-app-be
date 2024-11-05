@@ -1,7 +1,6 @@
 import express from 'express';
 import { router } from './routes/routes';
 import cors from 'cors';
-import { initRedis } from './libs/redis';
 import { PrismaClient } from '@prisma/client';
 import cookieParser from 'cookie-parser';
 // import swaggerUI from 'swagger-ui-express';
@@ -43,16 +42,14 @@ async function main() {
 //   })
 // );
 
-initRedis().then(() => {
-  main()
-    .then(async () => {
-      await prisma.$disconnect();
-    })
-    .catch(async (e) => {
-      console.error(e);
-      await prisma.$disconnect();
-      process.exit(1);
-    });
-});
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
 
 module.exports = app;
