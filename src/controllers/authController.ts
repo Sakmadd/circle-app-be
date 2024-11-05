@@ -45,9 +45,6 @@ class AuthControllers {
     );
   }
   async getOrCreateUserProvider(req: Request, res: Response) {
-    const avatar =
-      'https://api.dicebear.com/9.x/thumbs/svg?backgroundColor=ffdfbf';
-    const banner = '/assets/default-bg.png';
     const { id, username, email, name } = req.body;
     const { error, payload, message }: ServiceResponseDTO<string> =
       await AuthServices.getOrCreateUser({ email, id, name, username });

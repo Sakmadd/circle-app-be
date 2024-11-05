@@ -28,7 +28,7 @@ class AuthServices {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `http://localhost:5173/auth/callback`,
+          redirectTo: `${CLIENT}/auth/callback`,
         },
       });
 
