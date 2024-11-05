@@ -28,7 +28,7 @@ class AuthServices {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${CLIENT}/auth/callback`,
+          redirectTo: `https://circle-gold.vercel.app/auth/callback`,
         },
       });
 
