@@ -49,6 +49,8 @@ class FollowServices {
   async unFollow(
     followDto: FollowDto
   ): Promise<ServiceResponseDTO<FollowType>> {
+    console.log(followDto);
+
     try {
       if (this.isFolowHimself(followDto)) {
         throw new Error("Can't unfollow itself.");

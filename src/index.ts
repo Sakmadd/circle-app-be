@@ -1,9 +1,8 @@
-import express from 'express';
-import { router } from './routes/routes';
-import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import cookieParser from 'cookie-parser';
-import { HOST } from './configs/config';
+import cors from 'cors';
+import express from 'express';
+import { router } from './routes/routes';
 // import swaggerUI from 'swagger-ui-express';
 // import swaggerDoc from './libs/swagger.json';
 const prisma = new PrismaClient();
