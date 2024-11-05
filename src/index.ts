@@ -3,13 +3,19 @@ import { router } from './routes/routes';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import cookieParser from 'cookie-parser';
+import { HOST } from './configs/config';
 // import swaggerUI from 'swagger-ui-express';
 // import swaggerDoc from './libs/swagger.json';
 const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: HOST,
+  })
+);
+
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
