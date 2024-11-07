@@ -224,13 +224,23 @@ class UserServices {
 
       const rawResult: userMoreDetailType[] = await prisma.user.findMany({
         where: {
-          username: {
-            contains: searchDTO.keyword,
-            mode: 'insensitive',
-          },
           id: {
             not: loggedUser.id,
           },
+          OR: [
+            {
+              username: {
+                contains: searchDTO.keyword,
+                mode: 'insensitive',
+              },
+            },
+            {
+              name: {
+                contains: searchDTO.keyword,
+                mode: 'insensitive',
+              },
+            },
+          ],
         },
         include: {
           followers: true,
@@ -269,6 +279,7 @@ class UserServices {
       });
     }
   }
+
   async editUser(
     userDto: UserDto,
     loggedUser: UserType
