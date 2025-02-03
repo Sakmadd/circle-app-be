@@ -24,6 +24,15 @@ router.get(
   userController.getLoggedUser.bind(userController)
 );
 
-router.patch('/', authenticate, userController.editUser.bind(userController));
+router.patch(
+  '/text',
+  authenticate,
+  userController.editUserText.bind(userController)
+);
+router.patch(
+  '/image',
+  authenticate,
+  userController.editUserImage.bind(userController)
+);
 
 export default router;

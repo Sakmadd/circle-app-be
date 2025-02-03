@@ -120,12 +120,36 @@ class UserControllers {
       })
     );
   }
-  async editUser(req: Request, res: Response) {
+  async editUserText(req: Request, res: Response) {
     const newUserData: UserDto = req.body;
     const loggeduser = res.locals.user;
 
     const { error, message, payload }: ServiceResponseDTO<UserType> =
-      await userServices.editUser(newUserData, loggeduser);
+      await userServices.editUserText(newUserData, loggeduser);
+    if (error) {
+      return res.status(400).json(
+        new ResponseDTO<null>({
+          data: null,
+          error: true,
+          message: message,
+        })
+      );
+    }
+    return res.status(200).json(
+      new ResponseDTO<UserType>({
+        data: payload,
+        error: false,
+        message: message,
+      })
+    );
+  }
+
+  async editUserImage(req: Request, res: Response) {
+    const newUserData: UserDto = req.body;
+    const loggeduser = res.locals.user;
+
+    const { error, message, payload }: ServiceResponseDTO<UserType> =
+      await userServices.editUserImage(newUserData, loggeduser);
     if (error) {
       return res.status(400).json(
         new ResponseDTO<null>({

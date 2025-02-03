@@ -26,6 +26,16 @@ class FeedControllers {
       );
     }
 
+    if (payload.length === 0) {
+      return res.status(200).json(
+        new ResponseDTO<FeedMoreDetailType[]>({
+          data: payload,
+          error: false,
+          message: message,
+        })
+      );
+    }
+
     await Redis.setFeeds(payload);
 
     return res.status(200).json(

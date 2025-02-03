@@ -16,38 +16,10 @@ import {
   registerSchema,
   resetPasswordSchema,
 } from '../validators/dataSchema';
-import { supabase } from '../libs/supabase';
 
 const prisma = new PrismaClient();
 
 class AuthServices {
-  async loginWithProvider(
-    provider: 'google' | 'facebook'
-  ): Promise<ServiceResponseDTO<string>> {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `https://circle-gold.vercel.app/auth/callback`,
-        },
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-      return new ServiceResponseDTO<string>({
-        error: false,
-        payload: data.url || '',
-        message: 'Redirect to the login URL to complete the process.',
-      });
-    } catch (error) {
-      return new ServiceResponseDTO({
-        error: true,
-        payload: null,
-        message: error.message,
-      });
-    }
-  }
   async register(
     registerDTO: RegisterDTO
   ): Promise<ServiceResponseDTO<UserType>> {

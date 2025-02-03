@@ -280,7 +280,7 @@ class UserServices {
     }
   }
 
-  async editUser(
+  async editUserText(
     userDto: UserDto,
     loggedUser: UserType
   ): Promise<ServiceResponseDTO<UserType>> {
@@ -293,21 +293,17 @@ class UserServices {
         throw new Error('cant edit someone data');
       }
 
-      if (isBase64Image(userDto.avatar)) {
-        const result = await cloudUploader(userDto.avatar);
-        userDto.avatar = result.secure_url;
-      }
-
-      if (isBase64Image(userDto.banner)) {
-        const result = await cloudUploader(userDto.banner);
-        userDto.banner = result.secure_url;
-      }
-
       const updatedUser: UserType = await prisma.user.update({
         where: {
           id: userDto.id,
         },
-        data: this.editUserDto(userDto, targetUser),
+        data: {
+          id: userDto.id,
+          username: userDto.username || targetUser.username,
+          name: userDto.name || targetUser.username,
+          filterContent: userDto.filterContent || targetUser.filterContent,
+          bio: userDto.bio || targetUser.bio,
+        },
       });
 
       delete updatedUser.password;
@@ -334,16 +330,64 @@ class UserServices {
       });
     }
   }
-  private editUserDto(newData: UserDto, oldData: UserType) {
-    return new UserDto({
-      id: newData.id,
-      username: newData.username || oldData.username,
-      name: newData.name || oldData.username,
-      filterContent: newData.filterContent || oldData.filterContent,
-      avatar: newData.avatar || oldData.avatar,
-      banner: newData.banner || oldData.banner,
-      bio: newData.bio || oldData.bio,
-    });
+
+  async editUserImage(
+    userDto: UserDto,
+    loggedUser: UserType
+  ): Promise<ServiceResponseDTO<UserType>> {
+    try {
+      const targetUser: UserType = await prisma.user.findUnique({
+        where: { id: userDto.id },
+      });
+
+      if (targetUser.id !== loggedUser.id) {
+        throw new Error('cant edit someone data');
+      }
+
+      if (isBase64Image(userDto.avatar)) {
+        const result = await cloudUploader(userDto.avatar);
+
+        userDto.avatar = result.secure_url;
+      }
+
+      if (isBase64Image(userDto.banner)) {
+        const result = await cloudUploader(userDto.banner);
+        userDto.banner = result.secure_url;
+      }
+
+      const updatedUser: UserType = await prisma.user.update({
+        where: {
+          id: userDto.id,
+        },
+        data: {
+          avatar: userDto.avatar || targetUser.avatar,
+          banner: userDto.banner || targetUser.banner,
+        },
+      });
+
+      delete updatedUser.password;
+      delete updatedUser.createdAt;
+      delete updatedUser.updatedAt;
+
+      return new ServiceResponseDTO<UserType>({
+        error: false,
+        message: 'user edited',
+        payload: updatedUser,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return new ServiceResponseDTO({
+          error: true,
+          payload: null,
+          message: prismaErrorHandler(error),
+        });
+      }
+      return new ServiceResponseDTO({
+        error: true,
+        payload: null,
+        message: error,
+      });
+    }
   }
 }
 

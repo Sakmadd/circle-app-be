@@ -3,8 +3,6 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import { router } from './routes/routes';
-// import swaggerUI from 'swagger-ui-express';
-// import swaggerDoc from './libs/swagger.json';
 const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,23 +27,6 @@ async function main() {
     console.log(`Server running at port : ${port}`);
   });
 }
-
-// app.use('/doc', swaggerUI.serve);
-// app.get(
-//   '/doc',
-//   swaggerUI.setup(swaggerDoc, {
-//     customSiteTitle: 'Circle App Doc API',
-//     customCss: `
-//                 .swagger-ui .topbar { display: none}
-//                 .information-container.wrapper { background: #000; padding: 2rem  }
-//                 .information-container .info .main .title { color: #ffffff}
-//                 .renderedMarkdown p { margin: 0 !important; color: #ffffff !important }
-//                 `,
-//     swaggerOptions: {
-//       persistAuthorization: true,
-//     },
-//   })
-// );
 
 main()
   .then(async () => {
